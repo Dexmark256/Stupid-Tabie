@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Tabie 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#ff4d8d;--hot:#ff1f6b;--peach:#ffb347;
+  --lavender:#b57bee;--mint:#2ecc71;--bg:#fff5f9;
+  --dark:#2d0a1e;--card:#fff;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;overflow-x:hidden;cursor:none}
+
+/* ===== CURSOR ===== */
+#cur{position:fixed;width:22px;height:22px;background:var(--pink);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .08s,width .2s,height .2s;mix-blend-mode:multiply}
+#cur.big{width:50px;height:50px}
+
+/* ===== LOCK SCREEN ===== */
+#lock{position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#1a0a2e 0%,#3d0f5e 50%,#1a0a2e 100%);overflow:hidden;transition:opacity .9s,transform .9s}
+#lock.out{opacity:0;transform:scale(1.15);pointer-events:none}
+.stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle linear infinite}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+.lock-emoji{font-size:5rem;animation:spin 3s linear infinite;display:block;margin-bottom:.5rem}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.lock-h{font-family:'Pacifico',cursive;font-size:clamp(1.8rem,6vw,3rem);color:#ff9de2;text-shadow:0 0 30px #ff4d8d88;margin-bottom:.3em}
+.lock-sub{color:#c9a0ff;font-size:1rem;font-weight:600;margin-bottom:2rem}
+.digits{display:flex;gap:12px;margin-bottom:1.2rem}
+.dig{width:54px;height:64px;border-radius:14px;border:2px solid #6d28d9;background:rgba(255,255,255,.08);color:white;font-size:2rem;font-weight:900;text-align:center;outline:none;transition:border-color .2s,background .2s}
+.dig:focus{border-color:#ff4d8d;background:rgba(255,77,141,.15)}
+.hint{color:#9f75c4;font-size:.85rem;margin-bottom:1.5rem}
+.hint b{color:#ff9de2}
+.open-btn{background:linear-gradient(135deg,#ff4d8d,#b57bee);color:white;border:none;border-radius:50px;padding:14px 44px;font-size:1.1rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 0 30px #ff4d8d66;transition:transform .2s,box-shadow .2s}
+.open-btn:hover{transform:scale(1.06);box-shadow:0 0 50px #ff4d8daa}
+.err{color:#ff7eb6;font-size:.9rem;margin-top:.8rem;height:1.2em;transition:opacity .3s}
+
+/* ===== MAIN ===== */
+#main{display:none;flex-direction:column;align-items:center;padding:0 0 100px}
+#main.on{display:flex}
+
+/* ===== HERO ===== */
+.hero{width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;background:linear-gradient(160deg,#fff0f9 0%,#f3e8ff 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 20%,#ffb34733 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,#ff4d8d22 0%,transparent 50%)}
+
+/* ===== PHOTO FRAME ===== */
+/* 👇👇👇 PASTE YOUR PHOTO URL OR BASE64 BELOW 👇👇👇 */
+/* To use a photo: replace "YOUR_PHOTO_URL_HERE" with your image path or URL */
+/* Example: --photo: url('tabie.jpg'); */
+/* Or drag-drop a photo file into the same folder as this HTML file and use: --photo: url('yourfile.jpg'); */
+:root { --photo: url('YOUR_PHOTO_URL_HERE'); }
+
+.photo-frame{
+  width:200px;height:200px;border-radius:50%;
+  background:var(--photo) center/cover no-repeat, linear-gradient(135deg,#ffb347,#ff4d8d,#b57bee);
+  border:5px solid white;
+  box-shadow:0 0 0 6px #ff4d8d55, 0 20px 60px rgba(255,77,141,.35);
+  margin-bottom:28px;
+  animation:floatBob 3s ease-in-out infinite;
+  position:relative;cursor:pointer;
+  transition:transform .3s
+}
+.photo-frame:hover{transform:scale(1.08) rotate(3deg)}
+.photo-frame .photo-overlay{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(255,77,141,0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;opacity:0;
+  transition:opacity .3s,background .3s
+}
+.photo-frame:hover .photo-overlay{opacity:1;background:rgba(255,77,141,.2)}
+/* If no photo set, show placeholder emoji */
+.photo-placeholder{
+  width:200px;height:200px;border-radius:50%;
+  background:linear-gradient(135deg,#ffb347,#ff4d8d,#b57bee);
+  border:5px solid white;
+  box-shadow:0 0 0 6px #ff4d8d55,0 20px 60px rgba(255,77,141,.35);
+  margin-bottom:28px;font-size:5rem;
+  display:flex;align-items:center;justify-content:center;
+  animation:floatBob 3s ease-in-out infinite;
+  cursor:pointer;transition:transform .3s
+}
+.photo-placeholder:hover{transform:scale(1.08) rotate(3deg)}
+@keyframes floatBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.hero-name{font-family:'Pacifico',cursive;font-size:clamp(3.5rem,12vw,7rem);background:linear-gradient(135deg,#ff1f6b,#b57bee,#ffb347);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.2em}
+.hero-tag{font-family:'Caveat',cursive;font-size:1.8rem;color:#a0527a;margin-bottom:2rem}
+.scroll-hint{font-size:.9rem;color:#c084a8;animation:bounce 1.5s infinite;margin-top:1rem}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ===== SECTIONS ===== */
+.section{width:100%;max-width:600px;padding:60px 20px 0}
+.sec-title{font-family:'Pacifico',cursive;font-size:clamp(1.6rem,5vw,2.4rem);color:var(--hot);margin-bottom:8px;text-align:center}
+.sec-sub{text-align:center;color:#a0527a;font-weight:600;margin-bottom:28px;font-size:.95rem}
+
+/* ===== MOOD DETECTOR ===== */
+.mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.mood-btn{background:white;border:2px solid #ffd6ee;border-radius:18px;padding:18px 10px;font-size:2rem;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;text-align:center;font-family:'Nunito',sans-serif}
+.mood-btn span{display:block;font-size:.75rem;font-weight:700;color:#a0527a;margin-top:4px}
+.mood-btn:hover{transform:scale(1.1);border-color:var(--pink);box-shadow:0 8px 20px rgba(255,77,141,.2)}
+.mood-btn.active{border-color:var(--hot);background:#fff0f9;transform:scale(1.05)}
+.mood-result{background:white;border-radius:20px;padding:24px;border:2px solid #ffd6ee;text-align:center;min-height:100px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:700;color:var(--dark);line-height:1.5;transition:all .4s}
+.mood-result.pop{animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+
+/* ===== ROAST MACHINE ===== */
+.roast-card{background:linear-gradient(135deg,#fff5f0,#fff0f9);border:2px solid #ffd6cc;border-radius:24px;padding:30px;text-align:center}
+.roast-display{font-family:'Caveat',cursive;font-size:1.5rem;color:var(--dark);min-height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;line-height:1.4;padding:0 10px}
+.roast-btn{background:linear-gradient(135deg,#ff6b35,#ff4d8d);color:white;border:none;border-radius:50px;padding:13px 32px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(255,77,141,.3);transition:transform .2s;margin:6px}
+.roast-btn:hover{transform:scale(1.06)}
+.sweet-btn{background:linear-gradient(135deg,#b57bee,#ff4d8d)}
+.roast-tag{display:inline-block;background:#fff0f9;border:1.5px solid #ffd6ee;border-radius:20px;padding:4px 14px;font-size:.8rem;font-weight:700;color:#c0527a;margin-top:12px}
+
+/* ===== CLICK BATTLE ===== */
+.battle-wrap{background:white;border-radius:24px;border:2px solid #ffe0ef;padding:28px;text-align:center}
+.battle-score{font-family:'Pacifico',cursive;font-size:3.5rem;color:var(--hot);margin:10px 0;transition:transform .1s}
+.battle-score.hit{transform:scale(1.3)}
+.battle-btn{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#ff4d8d,#b57bee);border:none;font-size:3rem;cursor:pointer;box-shadow:0 8px 30px rgba(255,77,141,.4);transition:transform .1s,box-shadow .1s;position:relative;overflow:hidden}
+.battle-btn:active{transform:scale(.93);box-shadow:0 4px 16px rgba(255,77,141,.3)}
+.battle-msg{margin-top:14px;font-size:1rem;font-weight:700;color:#a0527a;min-height:1.5em}
+.battle-bar-wrap{background:#ffe0ef;border-radius:50px;height:20px;margin:14px 0 6px;overflow:hidden}
+.battle-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--lavender));border-radius:50px;transition:width .3s ease}
+.battle-label{font-size:.8rem;color:#c084a8;font-weight:600}
+
+/* ===== YES/NO GAME ===== */
+.yn-card{background:white;border-radius:24px;border:2px solid #e8d5ff;padding:32px;text-align:center}
+.yn-q{font-size:1.2rem;font-weight:800;margin-bottom:22px;min-height:2em;line-height:1.4}
+.yn-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.yn-yes{background:linear-gradient(135deg,#43e97b,#38f9d7);color:white;border:none;border-radius:50px;padding:14px 40px;font-size:1.1rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(67,233,123,.3);transition:transform .2s}
+.yn-no{background:white;color:var(--hot);border:2.5px solid var(--hot);border-radius:50px;padding:14px 40px;font-size:1.1rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .2s, all .3s;position:relative}
+.yn-yes:hover{transform:scale(1.06)}
+.yn-score{font-size:1rem;color:#a0527a;margin-top:16px;font-weight:700}
+
+/* ===== PHOTO GALLERY VIBES ===== */
+.gallery-frame{
+  width:100%;background:white;border-radius:24px;border:2px solid #ffd6ee;
+  padding:28px;text-align:center
+}
+.gallery-photo{
+  width:260px;height:260px;border-radius:20px;
+  /* 👇 GALLERY PHOTO — replace with your photo URL */
+  background:var(--photo) center/cover no-repeat, linear-gradient(135deg,#ffb347 0%,#ff4d8d 50%,#b57bee 100%);
+  margin:0 auto 16px;
+  box-shadow:0 12px 40px rgba(255,77,141,.25);
+  animation:floatBob 4s ease-in-out infinite;
+  position:relative;overflow:hidden;
+  border:4px solid white
+}
+.gallery-sticker{position:absolute;font-size:2rem;animation:wiggle 2s infinite}
+.gallery-caption{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--dark);margin-bottom:8px}
+.gallery-nav{display:flex;gap:12px;justify-content:center;margin-top:12px}
+.g-btn{background:#fff0f9;border:2px solid #ffd6ee;border-radius:50%;width:44px;height:44px;font-size:1.2rem;cursor:pointer;transition:transform .2s,background .2s}
+.g-btn:hover{background:var(--pink);transform:scale(1.1)}
+
+/* ===== LOVE LETTER ===== */
+.letter-wrap{background:linear-gradient(135deg,#fff8f0,#fff0f9);border-radius:24px;border:2px dashed #ffb347;padding:36px 28px;position:relative}
+.letter-wrap::before{content:'💌';position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:2.5rem;background:var(--bg);padding:0 8px}
+.letter-text{font-family:'Caveat',cursive;font-size:1.3rem;line-height:1.8;color:#3d1c3e;margin-bottom:20px}
+.letter-sig{font-family:'Pacifico',cursive;font-size:1.5rem;color:var(--hot);text-align:right}
+.letter-btn{display:block;margin:20px auto 0;background:linear-gradient(135deg,#ffb347,#ff4d8d);color:white;border:none;border-radius:50px;padding:13px 32px;font-size:1rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(255,77,141,.3);transition:transform .2s}
+.letter-btn:hover{transform:scale(1.06)}
+
+/* ===== FINAL ===== */
+.final{background:linear-gradient(160deg,#1a0a2e,#3d0f5e);border-radius:28px;padding:50px 30px;text-align:center;position:relative;overflow:hidden;margin:60px 20px 0;width:calc(100% - 40px);max-width:560px}
+.final::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,#ff4d8d22,transparent 60%)}
+.final-glow{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(#b57bee44,transparent);top:-50px;right:-50px;animation:pulse 3s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.final-emoji{font-size:4rem;display:block;margin-bottom:12px;animation:bounce 2s infinite}
+.final-h{font-family:'Pacifico',cursive;font-size:clamp(2rem,7vw,3.5rem);color:#ff9de2;text-shadow:0 0 40px #ff4d8d88;margin-bottom:.5em}
+.final-p{color:#ddb8f5;font-size:1.05rem;line-height:1.7;margin-bottom:28px;font-weight:600}
+.boom-btn{background:linear-gradient(135deg,#ff4d8d,#ffb347);color:white;border:none;border-radius:50px;padding:16px 44px;font-size:1.15rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 0 40px rgba(255,77,141,.5);transition:transform .2s}
+.boom-btn:hover{transform:scale(1.08)}
+
+/* ===== FLOATY HEARTS BG ===== */
+.hbg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.hf{position:absolute;animation:fup linear infinite;opacity:.4}
+@keyframes fup{from{transform:translateY(100vh) rotate(0)}to{transform:translateY(-10vh) rotate(360deg)}}
+
+/* confetti */
+.conf{position:fixed;pointer-events:none;z-index:9998;border-radius:2px;animation:cfall linear forwards}
+@keyframes cfall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* ===== MUSIC PLAYER ===== */
+#musicPlayer{
+  position:fixed;bottom:24px;right:24px;z-index:9000;
+  background:linear-gradient(135deg,#1a0a2e,#3d0f5e);
+  border-radius:20px;padding:14px 18px;
+  display:none;align-items:center;gap:14px;
+  box-shadow:0 8px 40px rgba(181,123,238,.45),0 0 0 1px rgba(255,77,141,.3);
+  min-width:220px;max-width:280px;
+  animation:slideInPlayer .6s cubic-bezier(.23,1.2,.32,1) both;
+  cursor:pointer;
+}
+#musicPlayer.visible{display:flex}
+@keyframes slideInPlayer{from{transform:translateY(120px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mp-disc{
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#ff4d8d,#b57bee,#ffb347);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+  box-shadow:0 0 20px rgba(255,77,141,.5);
+  transition:transform .3s;
+}
+.mp-disc.spinning{animation:discSpin 3s linear infinite}
+@keyframes discSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.mp-info{flex:1;overflow:hidden}
+.mp-title{color:#ff9de2;font-weight:900;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-artist{color:#9f75c4;font-size:.75rem;font-weight:600;margin-top:1px}
+.mp-bars{display:flex;align-items:flex-end;gap:2px;height:18px;margin-top:5px}
+.mp-bar{width:3px;background:var(--pink);border-radius:2px;animation:barBounce .6s ease-in-out infinite}
+.mp-bar:nth-child(2){animation-delay:.1s;height:60%}
+.mp-bar:nth-child(3){animation-delay:.2s;height:80%}
+.mp-bar:nth-child(4){animation-delay:.15s;height:50%}
+.mp-bar:nth-child(5){animation-delay:.05s;height:90%}
+@keyframes barBounce{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+.mp-bars.paused .mp-bar{animation:none;transform:scaleY(.3)}
+.mp-ctrl{background:rgba(255,255,255,.1);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:1rem;flex-shrink:0;transition:background .2s,transform .2s}
+.mp-ctrl:hover{background:rgba(255,77,141,.4);transform:scale(1.1)}
+.mp-vol{margin-top:6px;width:100%;appearance:none;height:3px;border-radius:2px;background:rgba(255,255,255,.2);outline:none;cursor:pointer}
+.mp-vol::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:var(--pink);cursor:pointer}
+#ytFrame{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px}
+
+/* ===== UTILS ===== */
+@keyframes wiggle{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.shake{animation:shake .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .8s ease both}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div class="hbg" id="hbg"></div>
+
+<!-- ===== LOCK ===== -->
+<div id="lock">
+  <div class="stars" id="stars"></div>
+  <span class="lock-emoji">🔐</span>
+  <h1 class="lock-h">Hey Tabie… 👀</h1>
+  <p class="lock-sub">Someone made something special for you. Enter the secret code!</p>
+  <div class="digits">
+    <input class="dig" id="d0" maxlength="1" inputmode="numeric" type="text"/>
+    <input class="dig" id="d1" maxlength="1" inputmode="numeric" type="text"/>
+    <input class="dig" id="d2" maxlength="1" inputmode="numeric" type="text"/>
+    <input class="dig" id="d3" maxlength="1" inputmode="numeric" type="text"/>
+  </div>
+  <p class="hint">💡 Hint: it's <b>1234</b> lol 😂 (very secure)</p>
+  <button class="open-btn" onclick="tryUnlock()">Open My Surprise 💝</button>
+  <p class="err" id="errMsg"></p>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <!--
+    =====================================================
+    📸 HOW TO ADD TABIE'S PHOTO:
+    Option 1 (easiest): Put her photo file (e.g. tabie.jpg) 
+      in the same folder as this HTML file, then find
+      the line below that says --photo: url('YOUR_PHOTO_URL_HERE')
+      and change it to --photo: url('tabie.jpg');
+    
+    Option 2: Use an online photo link:
+      --photo: url('https://yourlink.com/photo.jpg');
+    =====================================================
+    -->
+    <div class="photo-placeholder" id="heroPhoto" onclick="photoWiggle(this)" title="Click me!">
+      🌸
+    </div>
+
+    <h1 class="hero-name">Tabie!</h1>
+    <p class="hero-tag">you've been personally attacked with love 💕</p>
+    <p class="scroll-hint">scroll down for trouble ↓ 😈</p>
+  </div>
+
+  <!-- 1. MOOD DETECTOR -->
+  <div class="section fu">
+    <h2 class="sec-title">😤 Tabie's Mood Detector</h2>
+    <p class="sec-sub">Be honest… which one are you right now?</p>
+    <div class="mood-grid" id="moodGrid">
+      <button class="mood-btn" onclick="setMood(this,'happy')">😂<span>Laughing</span></button>
+      <button class="mood-btn" onclick="setMood(this,'cute')">🥺<span>Soft Hours</span></button>
+      <button class="mood-btn" onclick="setMood(this,'hungry')">🍕<span>Hungry</span></button>
+      <button class="mood-btn" onclick="setMood(this,'sleepy')">😴<span>Sleepy</span></button>
+      <button class="mood-btn" onclick="setMood(this,'annoyed')">😒<span>Annoyed</span></button>
+      <button class="mood-btn" onclick="setMood(this,'inlove')">😍<span>In Love</span></button>
+    </div>
+    <div class="mood-result" id="moodResult">👆 Pick your mood, queen!</div>
+  </div>
+
+  <!-- 2. ROAST MACHINE -->
+  <div class="section fu">
+    <h2 class="sec-title">🔥 The Roast Machine</h2>
+    <p class="sec-sub">Powered by the truth™ and zero chill</p>
+    <div class="roast-card">
+      <div class="roast-display" id="roastDisplay">"Press the button… if you dare 😈"</div>
+      <div>
+        <button class="roast-btn" onclick="getRoast()">Roast Me 🔥</button>
+        <button class="roast-btn sweet-btn" onclick="getSweet()">Say Something Nice 🥰</button>
+      </div>
+      <div class="roast-tag" id="roastTag">choose your fate</div>
+    </div>
+  </div>
+
+  <!-- 3. TAP BATTLE -->
+  <div class="section fu">
+    <h2 class="sec-title">👇 Tap Challenge</h2>
+    <p class="sec-sub">How much do you love me? Tap to prove it!</p>
+    <div class="battle-wrap">
+      <div class="battle-score" id="tapScore">0</div>
+      <p style="color:#c084a8;font-size:.85rem;margin-bottom:12px">taps</p>
+      <button class="battle-btn" id="tapBtn" onclick="doTap()">💖</button>
+      <div class="battle-bar-wrap"><div class="battle-bar" id="tapBar"></div></div>
+      <p class="battle-label" id="tapLabel">Tap that button!</p>
+      <p class="battle-msg" id="tapMsg"></p>
+    </div>
+  </div>
+
+  <!-- 4. YES/NO GAME -->
+  <div class="section fu">
+    <h2 class="sec-title">🎮 The Yes/No Challenge</h2>
+    <p class="sec-sub">Answering "No" is NOT allowed 😂</p>
+    <div class="yn-card">
+      <p class="yn-q" id="ynQ">Press start to play!</p>
+      <div class="yn-btns">
+        <button class="yn-yes" id="ynYes" onclick="ynAnswer(true)">Yes 💚</button>
+        <button class="yn-no" id="ynNo" onclick="ynAnswer(false)">No 😅</button>
+      </div>
+      <p class="yn-score" id="ynScore"></p>
+    </div>
+  </div>
+
+  <!-- 5. PHOTO SECTION -->
+  <div class="section fu">
+    <h2 class="sec-title">📸 You > Everyone Else</h2>
+    <p class="sec-sub">Scientific fact, not up for debate</p>
+    <div class="gallery-frame">
+      <!--
+      =====================================================
+      📸 GALLERY PHOTO:
+      Same as hero photo — put her photo in same folder
+      and update the CSS --photo variable at the top.
+      Both photos will update automatically!
+      =====================================================
+      -->
+      <div class="gallery-photo" id="galleryPhoto">
+        <div class="gallery-sticker" style="top:10px;right:10px">✨</div>
+        <div class="gallery-sticker" style="bottom:10px;left:10px;animation-delay:.5s">💖</div>
+        <!-- Emoji fallback when no photo is set -->
+        <div id="galleryEmoji" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,#ffb347,#ff4d8d,#b57bee)">🌸</div>
+      </div>
+      <div class="gallery-caption" id="galCaption">"The main character, always 🎬"</div>
+      <div class="gallery-nav">
+        <button class="g-btn" onclick="prevCaption()">◀</button>
+        <button class="g-btn" onclick="nextCaption()">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. LOVE LETTER -->
+  <div class="section fu">
+    <h2 class="sec-title">💌 A Letter For You</h2>
+    <p class="sec-sub">No cringe… okay maybe a little 😭</p>
+    <div class="letter-wrap">
+      <p class="letter-text" id="letterText">
+        Dear Tabie,<br><br>
+        I just want to say… you are absolutely ridiculous. 😂<br><br>
+        Like, who gave you the right to be that cute AND funny AND smart all at the same time? That's illegal. I'm pressing charges.<br><br>
+        But fr fr — every day with you is better than the last. You make me laugh when I don't want to, you make everything feel lighter, and somehow you've become my favourite part of every day.<br><br>
+        So yeah. I like you a lot. A LOT a lot. Don't let it get to your head. 🙃
+      </p>
+      <p class="letter-sig">— Your Person 💕</p>
+      <button class="letter-btn" onclick="revealLetter()">Read Another Version 🎲</button>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="final">
+    <div class="final-glow"></div>
+    <span class="final-emoji">🌟</span>
+    <h2 class="final-h">You're the One, Tabie</h2>
+    <p class="final-p">I could build 100 websites and none of them would be good enough to describe how special you are to me. But this one comes close. Maybe. 😂💖</p>
+    <button class="boom-btn" onclick="bigBoom()">🎉 Celebrate Us!</button>
+  </div>
+
+</div><!-- end main -->
+
+<!-- ===== MUSIC PLAYER ===== -->
+<div id="musicPlayer">
+  <div class="mp-disc" id="mpDisc">🎵</div>
+  <div class="mp-info">
+    <div class="mp-title">Tadow (Slowed)</div>
+    <div class="mp-artist">FKJ &amp; Masego 🌙</div>
+    <div class="mp-bars" id="mpBars">
+      <div class="mp-bar" style="height:70%"></div>
+      <div class="mp-bar"></div>
+      <div class="mp-bar"></div>
+      <div class="mp-bar"></div>
+      <div class="mp-bar" style="height:60%"></div>
+    </div>
+  </div>
+  <button class="mp-ctrl" id="mpBtn" onclick="toggleMusic(event)" title="Play/Pause">⏸</button>
+</div>
+<!-- Hidden YouTube iframe used for audio playback -->
+<iframe id="ytFrame" src="" allow="autoplay" frameborder="0" style="position:absolute;width:1px;height:1px;opacity:0;left:-9999px"></iframe>
+
+<script>
+// ===== CURSOR =====
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+document.querySelectorAll('button,input,.mood-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('big'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+});
+
+// ===== STARS on lock =====
+const starsEl = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div'); s.className='star';
+  const size=Math.random()*3+1;
+  Object.assign(s.style,{width:size+'px',height:size+'px',left:Math.random()*100+'vw',top:Math.random()*100+'vh',animationDuration:(1+Math.random()*3)+'s',animationDelay:(Math.random()*3)+'s'});
+  starsEl.appendChild(s);
+}
+
+// ===== FLOATING HEARTS BG =====
+const hbg=document.getElementById('hbg');
+['💖','💕','🌸','✨','💗','🦋','🌺','⭐','💫'].forEach((e,i)=>{
+  for(let j=0;j<2;j++){
+    const h=document.createElement('div'); h.className='hf'; h.textContent=e;
+    h.style.cssText=`left:${Math.random()*100}vw;font-size:${1+Math.random()*1.5}rem;animation-duration:${10+Math.random()*15}s;animation-delay:${Math.random()*12}s`;
+    hbg.appendChild(h);
+  }
+});
+
+// ===== LOCK =====
+const digs=[...document.querySelectorAll('.dig')];
+digs.forEach((d,i)=>{
+  d.addEventListener('input',()=>{ d.value=d.value.replace(/\D/,''); if(d.value&&i<3)digs[i+1].focus(); });
+  d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0)digs[i-1].focus(); });
+});
+function tryUnlock(){
+  const code=digs.map(d=>d.value).join('');
+  if(code==='1234'){
+    document.querySelector('.lock-emoji').style.animation='none';
+    document.querySelector('.lock-emoji').textContent='🔓';
+    document.querySelector('.lock-h').textContent='Yay! Welcome Tabie 💕';
+    setTimeout(()=>{
+      document.getElementById('lock').classList.add('out');
+      setTimeout(()=>{
+        document.getElementById('main').classList.add('on');
+        startMusic();
+      },900);
+    },600);
+  } else {
+    const err=document.getElementById('errMsg'); err.textContent='❌ Nope! Try 1234 silly 😂';
+    digs.forEach(d=>{ d.value=''; d.style.borderColor='#ff4d8d'; });
+    document.querySelector('.digits').classList.add('shake');
+    setTimeout(()=>{ document.querySelector('.digits').classList.remove('shake'); digs.forEach(d=>d.style.borderColor=''); err.textContent=''; digs[0].focus(); },600);
+  }
+}
+
+// ===== MUSIC PLAYER =====
+// Tadow Slowed — YouTube video ID
+const TADOW_ID = 'vkOJ_nilOhQ'; // Tadow slowed & reverb version
+let musicPlaying = false;
+
+function startMusic(){
+  const frame = document.getElementById('ytFrame');
+  // Autoplay via YouTube embed with mute=0, autoplay=1
+  frame.src = `https://www.youtube.com/embed/${TADOW_ID}?autoplay=1&loop=1&playlist=${TADOW_ID}&controls=0&rel=0&modestbranding=1&enablejsapi=1`;
+  musicPlaying = true;
+  const player = document.getElementById('musicPlayer');
+  player.classList.add('visible');
+  document.getElementById('mpDisc').classList.add('spinning');
+  document.getElementById('mpBars').classList.remove('paused');
+  document.getElementById('mpBtn').textContent = '⏸';
+}
+
+function toggleMusic(e){
+  e.stopPropagation();
+  const frame = document.getElementById('ytFrame');
+  if(musicPlaying){
+    // Pause: reload with autoplay=0
+    frame.src = `https://www.youtube.com/embed/${TADOW_ID}?autoplay=0&loop=1&playlist=${TADOW_ID}&controls=0&rel=0&modestbranding=1`;
+    musicPlaying = false;
+    document.getElementById('mpDisc').classList.remove('spinning');
+    document.getElementById('mpBars').classList.add('paused');
+    document.getElementById('mpBtn').textContent = '▶';
+  } else {
+    frame.src = `https://www.youtube.com/embed/${TADOW_ID}?autoplay=1&loop=1&playlist=${TADOW_ID}&controls=0&rel=0&modestbranding=1`;
+    musicPlaying = true;
+    document.getElementById('mpDisc').classList.add('spinning');
+    document.getElementById('mpBars').classList.remove('paused');
+    document.getElementById('mpBtn').textContent = '⏸';
+  }
+}
+
+// ===== PHOTO: Auto-detect if photo is set =====
+// This checks if you've set a real photo URL and hides the emoji placeholder if so
+window.addEventListener('load', () => {
+  const testEl = document.createElement('div');
+  testEl.style.cssText = 'position:absolute;width:1px;height:1px;background:var(--photo)';
+  document.body.appendChild(testEl);
+  const bg = getComputedStyle(testEl).backgroundImage;
+  document.body.removeChild(testEl);
+  const hasPhoto = bg && bg !== 'none' && !bg.includes('YOUR_PHOTO_URL_HERE');
+  if(hasPhoto){
+    // Hide emoji fallbacks if real photo is set
+    const ge = document.getElementById('galleryEmoji');
+    if(ge) ge.style.display='none';
+    // Update hero photo
+    const hp = document.getElementById('heroPhoto');
+    if(hp){
+      hp.style.background='var(--photo) center/cover no-repeat';
+      hp.textContent='';
+      hp.innerHTML='<div class="photo-overlay">😍</div>';
+    }
+  }
+});
+
+function photoWiggle(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation='floatBob .3s ease,wiggle .5s ease'; spawnHeartsAt(el); }
+
+// ===== MOOD =====
+const moods={
+  happy:{ text:'You\'re in full comedy mode right now 😂 I bet you\'ve already laughed at something dumb today and I wish I was there for it.', tag:'😂 Chaotic mode' },
+  cute:{ text:'Soft hours activated 🥺 You\'re probably wrapped in a blanket looking adorable and I\'m not even there. Criminal.', tag:'🥺 Soft era' },
+  hungry:{ text:'SAME. You deserve a full meal, dessert, AND a snack after. Nothing but the best for Tabie. 🍕🍰🧃', tag:'🍕 Feed her NOW' },
+  sleepy:{ text:'Go to sleep babe 😴 But first finish this page. Then sleep. You look cute when you\'re sleepy btw. Not that I\'m watching. 👀', tag:'😴 Nap required' },
+  annoyed:{ text:'Uh oh 😒 Who did it. Tell me. I\'ll handle it. Or I\'ll roast them. Same thing.', tag:'😤 Someone\'s in trouble' },
+  inlove:{ text:'Obviously in love with me 😌 It\'s okay, I get it. I\'m a lot to handle in the best way possible. You\'re welcome. 💅', tag:'😍 Obviously in love' },
+};
+function setMood(btn,key){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const r=document.getElementById('moodResult'); const m=moods[key];
+  r.textContent=m.text; r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop');
+}
+
+// ===== ROAST MACHINE =====
+const roasts=[
+  '"You take 4 hours to get ready and still somehow look better than everyone. Rude honestly." 😭',
+  '"Your phone is always at 2% battery. Every. Single. Time. It\'s a lifestyle choice at this point." 🔋',
+  '"You said \'5 more minutes\' 45 minutes ago. I\'m filing a missing persons report." ⏰',
+  '"You sing the wrong lyrics confidently and I respect it more than anything." 🎤',
+  '"You say \'I\'m not hungry\' and then eat half my food. Legend behaviour." 🍟',
+  '"Somehow you\'re late AND the most stylish person in the room. How???" 💅',
+  '"You laugh at your own jokes before the punchline. It\'s adorable AND annoying." 😂',
+  '"Your idea of \'cleaning up\' is moving the mess to a different corner." 🧹',
+];
+const sweets=[
+  '"Honestly? You could walk into any room and make it better just by existing." 🌟',
+  '"The way you care about people without even trying is one of my favourite things about you." 💕',
+  '"You don\'t even know how many times you\'ve made my day just by being yourself." ☀️',
+  '"You\'re literally the funniest person I know and I\'m not saying that to be nice." 😂💖',
+  '"Everything\'s more fun when you\'re around. That\'s just facts." 🎉',
+  '"I fall for you a little more every time you laugh. It\'s a problem I refuse to fix." 🥺',
+];
+let lastRoast=-1;
+function getRoast(){
+  let i; do{i=Math.floor(Math.random()*roasts.length)}while(i===lastRoast); lastRoast=i;
+  const d=document.getElementById('roastDisplay'); d.style.opacity=0;
+  setTimeout(()=>{ d.textContent=roasts[i]; d.style.opacity=1; document.getElementById('roastTag').textContent='🔥 Roasted'; },200);
+  d.style.transition='opacity .2s';
+}
+function getSweet(){
+  const i=Math.floor(Math.random()*sweets.length);
+  const d=document.getElementById('roastDisplay'); d.style.opacity=0;
+  setTimeout(()=>{ d.textContent=sweets[i]; d.style.opacity=1; document.getElementById('roastTag').textContent='🥰 Sweetened'; },200);
+}
+
+// ===== TAP BATTLE =====
+let taps=0; const TAP_GOAL=50;
+const tapMsgs=[
+  [0,'Tap that button! 👇'],[5,'Okay warming up… 🤔'],[10,'Getting there! 💪'],[20,'Okay okay you love me a little 🥺'],
+  [30,'Woah you\'re going for it!! 😍'],[40,'Almost there bestie!! 🔥'],[TAP_GOAL,'💥 CONFIRMED: Tabie loves me to infinity 💖💖💖'],
+];
+function doTap(){
+  if(taps>=TAP_GOAL)return;
+  taps++;
+  const s=document.getElementById('tapScore'); s.textContent=taps; s.classList.remove('hit'); void s.offsetWidth; s.classList.add('hit');
+  document.getElementById('tapBar').style.width=(taps/TAP_GOAL*100)+'%';
+  const msg=tapMsgs.filter(m=>taps>=m[0]).pop();
+  document.getElementById('tapMsg').textContent=msg?msg[1]:'';
+  document.getElementById('tapLabel').textContent=taps>=TAP_GOAL?'✅ Proof secured!':taps+' / '+TAP_GOAL+' taps';
+  if(taps>=TAP_GOAL){ document.getElementById('tapBtn').textContent='✅'; smallBoom(); }
+  spawnHeartsAt(document.getElementById('tapBtn'));
+}
+
+// ===== YES/NO GAME =====
+const ynQs=[
+  {q:"Am I the funniest person you know? 😂", noMove:true},
+  {q:"Do you actually like spending time with me? 🥺", noMove:true},
+  {q:"Am I kinda cute though? 👀", noMove:true},
+  {q:"Would you hug me right now if you could? 🤗", noMove:true},
+  {q:"Do you think about me sometimes? 😏", noMove:true},
+  {q:"Okay fine… do you love me? 💖", noMove:true},
+];
+let ynIdx=0, ynYeses=0, ynStarted=false;
+function startYN(){ ynStarted=true; loadYN(); }
+function loadYN(){
+  if(ynIdx>=ynQs.length){ document.getElementById('ynQ').textContent=`Game over! You said Yes ${ynYeses}/${ynQs.length} times 💖`; document.getElementById('ynScore').textContent=ynYeses===ynQs.length?'Perfect score! That means you love me 😭':'You tried to say No. Bold move.'; document.getElementById('ynYes').style.display='none'; document.getElementById('ynNo').style.display='none'; return; }
+  document.getElementById('ynQ').textContent=ynQs[ynIdx].q;
+  resetNoBtn();
+}
+let noMoves=0;
+function resetNoBtn(){ noMoves=0; const b=document.getElementById('ynNo'); b.style.transform=''; b.style.position='relative'; b.style.left=''; b.style.top=''; b.textContent='No 😅'; }
+function ynAnswer(yes){
+  if(!ynStarted){ ynStarted=true; loadYN(); return; }
+  if(yes){ ynYeses++; ynIdx++; smallBoom(); loadYN(); }
+}
+document.getElementById('ynNo').addEventListener('mouseover', runAway);
+document.getElementById('ynNo').addEventListener('touchstart', runAway, {passive:true});
+function runAway(){
+  noMoves++;
+  if(noMoves>5){ document.getElementById('ynNo').textContent="Fine... Yes 🙄"; document.getElementById('ynNo').onclick=()=>ynAnswer(true); return; }
+  const b=document.getElementById('ynNo');
+  const maxX=Math.min(200, window.innerWidth/4);
+  const maxY=60;
+  b.style.position='relative';
+  b.style.left=(Math.random()*maxX*2-maxX)+'px';
+  b.style.top=(Math.random()*maxY*2-maxY)+'px';
+  b.style.transition='left .2s,top .2s';
+}
+// init yn
+document.getElementById('ynQ').textContent='Ready to play? Hit Yes to start! 😄';
+document.getElementById('ynYes').onclick = function(){ if(!ynStarted){ ynStarted=true; loadYN(); }else{ ynAnswer(true); } };
+
+// ===== GALLERY CAPTIONS =====
+const captions=[
+  '"The main character, always 🎬"',
+  '"Literally too cute for words 🌸"',
+  '"If \'glowing\' was a person 💫"',
+  '"Certified best human 🏆"',
+  '"My favourite view 👀💕"',
+  '"She woke up like this (probably not but still) 😂✨"',
+];
+let capIdx=0;
+function nextCaption(){ capIdx=(capIdx+1)%captions.length; document.getElementById('galCaption').textContent=captions[capIdx]; }
+function prevCaption(){ capIdx=(capIdx-1+captions.length)%captions.length; document.getElementById('galCaption').textContent=captions[capIdx]; }
+
+// ===== LOVE LETTER =====
+const letters=[
+  `Dear Tabie,<br><br>I just want to say… you are absolutely ridiculous. 😂<br><br>Like, who gave you the right to be that cute AND funny AND smart all at the same time? That's illegal. I'm pressing charges.<br><br>But fr fr — every day with you is better than the last. You make me laugh when I don't want to, you make everything feel lighter, and somehow you've become my favourite part of every day.<br><br>So yeah. I like you a lot. A LOT a lot. Don't let it get to your head. 🙃`,
+  `Dear Tabie,<br><br>Okay so I was trying to write something normal but here we are. 😂<br><br>You make everything stupidly fun. Like, going to the grocery store becomes an adventure. Watching a dumb movie becomes a memory. That's you. You do that.<br><br>I genuinely can't imagine not having you around. And I don't want to. So let's not do that, yeah? Cool. Deal. 🤝💕`,
+  `Dear Tabie,<br><br>There are approximately 8 billion people on this planet. And you're the only one I want to be annoying with. 🥲<br><br>You laugh too loud, you're always on your phone, and somehow you still manage to be the most wonderful person in any room you walk into.<br><br>I love you more than I'll ever admit out loud. But here it is. In writing. On a website. Very official. Very legal. 💖`,
+];
+let letIdx=0;
+function revealLetter(){ letIdx=(letIdx+1)%letters.length; document.getElementById('letterText').innerHTML=letters[letIdx]; smallBoom(); }
+
+// ===== CONFETTI UTILS =====
+const cols=['#ff4d8d','#ffb347','#b57bee','#43e97b','#ff9de2','#fff176','#4fc3f7'];
+function spawnHeartsAt(el){
+  const r=el.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(let i=0;i<5;i++){
+    const p=document.createElement('div');
+    p.textContent=['💖','💕','✨','🌸'][Math.floor(Math.random()*4)];
+    p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;font-size:${1+Math.random()}rem;pointer-events:none;z-index:9999;animation:cfall ${.8+Math.random()*.5}s linear forwards;animation-delay:${Math.random()*.2}s`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),2000);
+  }
+}
+function smallBoom(){
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div'); p.className='conf';
+    p.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${1.2+Math.random()*1.5}s;animation-delay:${Math.random()*.4}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),3000);
+  }
+}
+function bigBoom(){
+  for(let i=0;i<150;i++){
+    const p=document.createElement('div'); p.className='conf';
+    p.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${6+Math.random()*12}px;height:${6+Math.random()*12}px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.7}s;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),4000);
+  }
+}
+</script>
+</body>
+</html>
